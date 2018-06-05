@@ -14,11 +14,10 @@ class ThreadPool
 {
     QWaitCondition isFree;
     QMutex mutex;
-    int nbThreadWorking,
-        maxThreadCount;
-    PoolWorker* workers;
+    int maxThreadCount;
+    PoolWorker** workers;
 public:
-    ThreadPool(int maxThreadCount) : maxThreadCount(maxThreadCount) {
+    ThreadPool(int maxThreadCount) : maxThreadCount(maxThreadCount), workers(new PoolWorker*[maxThreadCount]) {
 
     }
 
@@ -30,8 +29,8 @@ public:
         int nbThreadFree = getFirstThreadFree();
 
         if(nbThreadFree != -1){
-            workers[nbThreadFree] = PoolWorker(runnable, &isFree);
-            workers[nbThreadFree].start();
+            workers[nbThreadFree] = new PoolWorker(runnable, &isFree);
+            workers[nbThreadFree]->start();
         } else {
             isFree.wait(&mutex);
         }
@@ -43,7 +42,7 @@ private:
     // Si n'est pas initialisé ou s'il ne travaille pas. retourne l'indice
     int getFirstThreadFree(){
         for(int i = 0; i < maxThreadCount; i++){
-            if(&workers[i] == nullptr || !workers[i].getIsRunning()){
+            if(!workers[i]->getIsRunning()){
                 return i;
             }
         }

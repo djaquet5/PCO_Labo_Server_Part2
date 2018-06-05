@@ -64,7 +64,7 @@ FileServer::FileServer(quint16 port, bool debug, QObject *parent) :
     hasDebugLog(debug)
 {
 
-    ThreadPool* pool = new ThreadPool(2);
+    ThreadPool* pool = new ThreadPool(4);
 
     requests = new Buffer<Request>(1000);
     responses = new Buffer<Response>(1000);

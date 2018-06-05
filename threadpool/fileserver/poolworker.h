@@ -2,6 +2,7 @@
 #define POOLWORKER_H
 
 #include <QWaitCondition>
+
 #include "runnable.h"
 
 class PoolWorker {

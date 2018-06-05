@@ -26,7 +26,8 @@ HEADERS += \
     requestdispatcherthread.h \
     threadpool.h \
     requestworker.h \
-    runnable.h
+    runnable.h \
+    poolworker.h
 
 EXAMPLE_FILES += fileclient.html
 
