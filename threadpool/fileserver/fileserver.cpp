@@ -55,6 +55,7 @@
 #include "buffer.h"
 #include "response.h"
 #include "request.h"
+#include "threadpool.h"
 
 FileServer::FileServer(quint16 port, bool debug, QObject *parent) :
     QObject(parent),
@@ -63,10 +64,12 @@ FileServer::FileServer(quint16 port, bool debug, QObject *parent) :
     hasDebugLog(debug)
 {
 
+    ThreadPool* pool = new ThreadPool(2);
+
     requests = new Buffer<Request>(1000);
     responses = new Buffer<Response>(1000);
 
-    reqDispatcher = new RequestDispatcherThread(requests,responses, hasDebugLog);
+    reqDispatcher = new RequestDispatcherThread(requests,responses, pool, hasDebugLog);
     reqDispatcher->start();
 
     respDispatcher = new ResponseDispatcherThread(responses, hasDebugLog);

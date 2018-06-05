@@ -11,6 +11,7 @@
 */
 #include "requesthandler.h"
 #include "response.h"
+#include "runnable.h"
 
 #ifndef REQUESTWORKER_H
 #define REQUESTWORKER_H
@@ -18,18 +19,20 @@
 #endif // REQUESTWORKER_H
 
 
-class RequestWorker : public QThread
+class RequestWorker : public Runnable
 {
 private:
     Request request;
     AbstractBuffer<Response>* responses;
     bool hasDebugLog;
+    QString m_id;
 
 public:
     RequestWorker(Request request,
                   AbstractBuffer<Response>* responses,
+                  QString m_id,
                   bool hasDebugLog):
-        request(request), responses(responses), hasDebugLog(hasDebugLog) {}
+        request(request), responses(responses), hasDebugLog(hasDebugLog), m_id(m_id) {}
 
 protected:
 
@@ -39,6 +42,14 @@ protected:
      */
     void run (){
         responses->put((new RequestHandler(request, hasDebugLog))->handle());
+    }
+
+    /**
+    * @brief id returns the Id of the Runnable
+    * @return The Id of the Runnable
+    */
+    virtual QString id() {
+        return m_id;
     }
 
 };

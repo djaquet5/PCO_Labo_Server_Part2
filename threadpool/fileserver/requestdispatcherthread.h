@@ -22,7 +22,7 @@
 #include "request.h"
 #include "requestworker.h"
 #include "response.h"
-
+#include "threadpool.h"
 
 class RequestDispatcherThread : public QThread
 {
@@ -37,8 +37,9 @@ public:
      */
     RequestDispatcherThread(AbstractBuffer<Request>* requests,
                             AbstractBuffer<Response>* responses,
+                            ThreadPool* pool,
                             bool hasDebugLog) :
-        requests(requests),responses(responses), hasDebugLog(hasDebugLog) {
+        requests(requests),responses(responses), pool(pool), hasDebugLog(hasDebugLog) {
 
         if (hasDebugLog)
             qDebug() << "Created requests dispatcher thread";
@@ -57,16 +58,17 @@ protected:
             if (hasDebugLog)
                 qDebug() << "Waiting for request...";
 
-            RequestWorker* tmp =  new RequestWorker(requests->get(),
-                                                    responses,
-                                                    hasDebugLog);
-            tmp->start();
+            pool->start(new RequestWorker(requests->get(),
+                                          responses,
+                                          "mill",
+                                          hasDebugLog));
         }
     }
 
 private:
     AbstractBuffer<Request>* requests;
     AbstractBuffer<Response>* responses;
+    ThreadPool* pool;
     bool hasDebugLog;
 };
 
