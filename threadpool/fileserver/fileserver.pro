@@ -21,7 +21,12 @@ HEADERS += \
     abstractbuffer.h \
     request.h \
     requesthandler.h \
-    responsedispatcherthread.h
+    responsedispatcherthread.h \
+    buffer.h \
+    requestdispatcherthread.h \
+    threadpool.h \
+    requestworker.h \
+    runnable.h
 
 EXAMPLE_FILES += fileclient.html
 
